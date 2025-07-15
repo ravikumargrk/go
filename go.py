@@ -26,19 +26,13 @@ if sys.argv[1:]:
             write_temp(path)
             exit(0)
 
-    # search for pattern in current directory
-    search_path = f'*{path}*'
-    matches = glob(search_path)
-    if matches:
-        from tools import choose_prompt
-        path = choose_prompt(matches)
+    if os.path.isdir(path):
         write_temp(path)
         exit(0)
-    
 
-    # search for pattern recursively in the sub directories
-    search_path = f'**\\*{path}*'
-    matches = glob(search_path, recursive=True)
+    # search for pattern in current directory and recursively in the sub directories
+    matches = [f for f in f'*{path}*' if os.path.isdir(f)]
+    matches += [f for f in glob(f'**\\*{path}*', recursive=True) if os.path.isdir(f)]
     if matches:
         from tools import choose_prompt
         path = choose_prompt(matches)
