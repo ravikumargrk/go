@@ -4,7 +4,7 @@ import sys
 import os
 from glob import glob
 
-go_cmd_path = r"C:\Users\E161262\OneDrive - Mastercard\Documents\TASKS\go\go_temp.cmd"
+go_cmd_path = r"go_temp.cmd"
 
 def write_temp(path):
     if path:
