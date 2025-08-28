@@ -51,7 +51,7 @@ else:
 import os 
 
 MAX_LEN = os.get_terminal_size().columns
-repr_line = lambda line: '...' + line[:MAX_LEN-3] if len(line) > MAX_LEN else line
+repr_line = lambda line, width: '...' + line[:width-4] if len(line) > width else line
 
 def choose_prompt(options_list):
     if options_list:
@@ -59,9 +59,9 @@ def choose_prompt(options_list):
             return options_list[0]
 
         width = len(str(len(options_list) - 1))
-        options = [f'{str(fidx).rjust(width)}: {f}' for fidx, f in enumerate(options_list)]
+        options = [f'{str(fidx).rjust(width)}: {repr_line(f, MAX_LEN-width-2)}' for fidx, f in enumerate(options_list)]
         idx = 0
-        sys.stdout.write(repr_line(options[idx]))
+        sys.stdout.write(options[idx])
         sys.stdout.flush()
         while True:
             dirkey = get_key()
@@ -75,7 +75,46 @@ def choose_prompt(options_list):
                 return None
             sys.stdout.write('\r'+ ' '*MAX_LEN)
             idx = min(idx+1, len(options)-1) if dirkey in ['DOWN', 'RIGHT'] else max(idx-1, 0)
-            sys.stdout.write('\r' + repr_line(options[idx]))
+            sys.stdout.write('\r' + options[idx])
             sys.stdout.flush()
     else:
         return None
+
+
+
+def prompt_option(option:str):
+    sys.stdout.write('\x1b[2K\r' + option)
+    sys.stdout.flush()
+    while True:
+        dirkey = get_key()
+        if dirkey in ['\r', '\n']:
+            sys.stdout.write('\r'+ ' '*MAX_LEN + '\r')
+            return 0
+        elif dirkey in ['\x03']:
+            sys.stdout.write('\r'+ ' '*MAX_LEN + '\r')
+            return 3
+        elif dirkey in ['DOWN', 'RIGHT']:
+            return 1
+        elif dirkey in ['LEFT', 'UP']:
+            return -1
+        else:
+            return 3
+        
+#     options = [f'{repr_line(f, MAX_LEN-width-2)}' for fidx, f in enumerate(options_list)]
+#     idx = 0
+#     sys.stdout.write(options[idx])
+#     sys.stdout.flush()
+#     while True:
+#         dirkey = get_key()
+#         if dirkey in ['\r', '\n']:
+#             sys.stdout.write('\r'+ ' '*MAX_LEN)
+#             sys.stdout.write('\r')
+#             return options_list[idx]
+#         if dirkey in ['\x03']:
+#             sys.stdout.write('\r'+ ' '*MAX_LEN)
+#             sys.stdout.write('\r')
+#             return None
+#         sys.stdout.write('\r'+ ' '*MAX_LEN)
+#         idx = min(idx+1, len(options)-1) if dirkey in ['DOWN', 'RIGHT'] else max(idx-1, 0)
+#         sys.stdout.write('\r' + options[idx])
+#         sys.stdout.flush()
