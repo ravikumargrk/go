@@ -4,7 +4,7 @@ import sys
 import os
 from tools import prompt_option
 
-go_cmd_path = r"C:\Users\E161262\OneDrive - Mastercard\Documents\TASKS\go\go_temp.cmd"
+go_cmd_path = r"go\go_temp.cmd"
 
 def write_temp(path):
     if path:
@@ -100,3 +100,4 @@ if sys.argv[1:]:
     # fuzzy match
 
     
+
